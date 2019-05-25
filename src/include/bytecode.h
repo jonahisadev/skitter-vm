@@ -1,0 +1,37 @@
+#ifndef SK_BYTECODE_H
+#define SK_BYTECODE_H
+
+enum Bytecode_t {
+	BYTECODE_MOV_REG_CONST = 0x01,
+	BYTECODE_MOV_REG_REG = 0x02,
+	BYTECODE_PUSH_CONST = 0x10,
+	BYTECODE_ADD_STACK = 0x11,
+	BYTECODE_SUB_STACK = 0x12,
+	BYTECODE_MUL_STACK = 0x13,
+	BYTECODE_DIV_STACK = 0x14,
+	BYTECODE_ADD_REG_REG = 0x15,
+	BYTECODE_HLT = 0xFF
+};
+typedef enum Bytecode_t Bytecode;
+
+enum BytecodeRegister_t {
+	BYTECODE_REGISTER_AX = 0x01,
+	BYTECODE_REGISTER_BX = 0x02,
+	BYTECODE_REGISTER_CX = 0x03,
+	BYTECODE_REGISTER_DX = 0x04,
+	BYTECODE_REGISTER_RX = 0x05,
+	BYTECODE_REGISTER_SP = 0x06,
+	BYTECODE_REGISTER_BP = 0x07,
+
+	BYTECODE_REGISTER_SIZE = 0x08,
+};
+typedef enum BytecodeRegister_t BytecodeRegister;
+
+enum ConstantSize_t {
+	CONSTANT_SIZE_BYTE = 1,
+	CONSTANT_SIZE_SHORT = 2,
+	CONSTANT_SIZE_INT = 4
+};
+typedef enum ConstantSize_t ConstantSize;
+
+#endif // SK_BYTECODE_H

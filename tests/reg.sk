@@ -1,0 +1,4 @@
+mov %ax #30
+mov %bx #12
+add %bx %ax
+hlt
