@@ -35,6 +35,17 @@ void write_int_to_buffer(ByteBuffer* buf, unsigned int n) {
 	write_byte_to_buffer(buf, n & 0x000000FF);
 }
 
+void write_byte_at_buffer_loc(ByteBuffer* buf, int index, unsigned char n) {
+	buf->buffer[index] = n;
+}
+
+void write_int_at_buffer_loc(ByteBuffer* buf, int index, unsigned int n) {
+	write_byte_at_buffer_loc(buf, index + 0, n & 0xFF000000);
+	write_byte_at_buffer_loc(buf, index + 1, n & 0x00FF0000);
+	write_byte_at_buffer_loc(buf, index + 2, n & 0x0000FF00);
+	write_byte_at_buffer_loc(buf, index + 3, n & 0x000000FF);
+}
+
 unsigned char read_byte_from_buffer(ByteBuffer* buf, int index) {
 	return buf->buffer[index];
 }

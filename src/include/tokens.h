@@ -6,7 +6,9 @@
 enum TokenType_t {
 	INST,
 	NUM,
-	REGISTER
+	REGISTER,
+	LABEL,
+	JUMP_TO,
 };
 typedef enum TokenType_t TokenType;
 
@@ -18,6 +20,7 @@ enum TokenInst_t {
 	ADD,
 	SUB,
 	MUL,
+	JMP,
 	HLT
 };
 typedef enum TokenInst_t TokenInst;

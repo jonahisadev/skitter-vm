@@ -16,6 +16,8 @@ void load_byte_buffer(ByteBuffer* buf, unsigned char* buffer, int len);
 void write_byte_to_buffer(ByteBuffer* buf, unsigned char n);
 void write_short_to_buffer(ByteBuffer* buf, unsigned short n);
 void write_int_to_buffer(ByteBuffer* buf, unsigned int n);
+void write_byte_at_buffer_loc(ByteBuffer* buf, int index, unsigned char n);
+void write_int_at_buffer_loc(ByteBuffer* buf, int index, unsigned int n);
 unsigned char read_byte_from_buffer(ByteBuffer* buf, int index);
 unsigned int read_int_from_buffer(ByteBuffer* buf, int index);
 void delete_byte_buffer(ByteBuffer* buf);

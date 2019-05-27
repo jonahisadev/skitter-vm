@@ -102,6 +102,12 @@ int run_bytecode(unsigned char* n_code, int len) {
 				break;
 			}
 
+			case (BYTECODE_JMP): {
+				unsigned int addr = read_int_from_buffer(runtime->code, runtime->pc);
+				runtime->pc = addr;
+				break;
+			}
+
 			// HLT
 			case (BYTECODE_HLT): {
 				status = runtime->reg[BYTECODE_REGISTER_BX];

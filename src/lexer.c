@@ -1,7 +1,8 @@
 #include "include/lexer.h"
 
-TokenList* run_lexer(char* source) {
-	TokenList* list = create_token_list();
+CompilerState* run_lexer(char* source) {
+	CompilerState* cs = create_compiler_state();
+	TokenList* list = cs->tokens;
 	char lex[256];
 	int lexi = 0;
 	int i = 0;
@@ -12,6 +13,21 @@ TokenList* run_lexer(char* source) {
 
 		while (!is_lexer_char_important(source[i])) {
 			lex[lexi++] = source[i++];
+		}
+
+		// Skip over tabs
+		if (lexi == 0 && source[i] == '\t') {
+			i++;
+			lexi = 0;
+			continue;
+		}
+
+		// Skip empty lines
+		if (lexi == 0 && source[i] == '\n') {
+			i++;
+			lexi = 0;
+			line++;
+			continue;
 		}
 
 		// Number
@@ -28,16 +44,38 @@ TokenList* run_lexer(char* source) {
 			add_token_to_list(list, create_token(REGISTER, reg, line));
 		}
 
+		// Label
+		else if (lex[strlen(lex)-1] == ':') {
+			lex[strlen(lex)-1] = '\0';
+			if (label_list_contains(cs->labels, lex) != -1) {
+				printf("Duplicate label '%s' at line %d\n", lex, line);
+				cs->status = COMPILER_SYNTAX_ERROR;
+				goto advance;
+			}
+			add_token_to_list(list, create_token(LABEL, cs->labels->ptr, line));
+			add_label_to_list(cs->labels, create_label(lex, 0));
+		}
+
+		// Jump To
+		else if (lex[0] == '@') {
+			char id[strlen(lex)];
+			memcpy(id, &lex[1], strlen(lex));
+			id[strlen(lex)-1] = '\0';
+			add_token_to_list(list, create_token(JUMP_TO, cs->jumps->ptr, line));
+			add_label_to_list(cs->jumps, create_label(id, 0));
+		}
+
 		// Instruction
 		else {
 			TokenInst inst = lexer_get_instruction(lex);
 			// printf("INST: %d (%s)\n", inst, lex);
 			if (inst == NO_INST) {
-				printf("ERROR: %d, %s\n", inst, lex);
+				printf("INST ERROR: %d, %s\n", inst, lex);
 			}
 			add_token_to_list(list, create_token(INST, inst, line));
 		}
 
+		advance:
 		if (source[i] == '\0')
 			break;
 		if (source[i] == '\n')
@@ -46,7 +84,7 @@ TokenList* run_lexer(char* source) {
 		lexi = 0;
 	}
 
-	return list;
+	return cs;
 }
 
 bool is_lexer_char_important(char c) {
@@ -71,6 +109,8 @@ int lexer_get_instruction(char* str) {
 		return SUB;
 	if (strcmp(str, "mul") == 0)
 		return MUL;
+	if (strcmp(str, "jmp") == 0)
+		return JMP;
 	if (strcmp(str, "hlt") == 0)
 		return HLT;
 	return NO_INST;

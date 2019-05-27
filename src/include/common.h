@@ -6,6 +6,8 @@
 #include <string.h>
 #include <stdbool.h>
 
+#include "list.h"
+
 // Panic exit with message
 #define panic(x, ...) fprintf(stderr, "%s:%d ", __FILE__, __LINE__); fprintf(stderr, (x), __VA_ARGS__); exit(1)
 

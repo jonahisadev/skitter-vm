@@ -24,14 +24,13 @@ int main(int argc, char** argv) {
 	if (strcmp(argv[1], "compile") == 0) {
 		const char* filename = argv[2];
 		char* source = read_file_ascii(filename);
-		TokenList* token_list = run_lexer(source);
-		CompilerStatus status = compile_tokens(token_list, argv[3]);
+		CompilerState* cs = run_lexer(source);
+		CompilerStatus status = compile_tokens(cs, argv[3]);
 		if (status != COMPILER_STATUS_SUCCESS) {
 			panic("Compiler Error: %d\n", status);
 		}
-		delete_token_list(token_list);
+		delete_compiler_state(cs);
 		free(source);
-
 		return status;
 	}
 

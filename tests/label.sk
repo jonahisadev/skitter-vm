@@ -1,0 +1,7 @@
+main:
+	mov %bx #12
+	jmp @next
+	mov %bx #14
+
+next:
+	hlt

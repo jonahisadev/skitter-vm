@@ -3,8 +3,9 @@
 
 #include "common.h"
 #include "tokens.h"
+#include "compiler.h"
 
-TokenList* run_lexer(char* source);
+CompilerState* run_lexer(char* source);
 bool is_lexer_char_important(char c);
 int lexer_get_instruction(char* str);
 int lexer_get_register(char* str);
