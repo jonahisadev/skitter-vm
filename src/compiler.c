@@ -26,11 +26,12 @@ CompilerStatus compile_tokens(CompilerState* cs, const char* filename) {
 
 	while (i < tokens->ptr) {
 		token = tokens->tokens[i];
+		// printf("(%d) %d: %d\n", i, token->type, token->data);
 
 		if (token->type == INST) {
 			switch (token->data) {
 				case (MOV): {
-					if (tokens->TOKEN(1)->type == REGISTER && tokens->TOKEN(2)->type == NUM) {
+					if (tokens->TOKEN(1)->type == REGISTER && tokens->TOKEN(2)->type == NUMBER) {
 						write_byte_to_buffer(buffer, BYTECODE_MOV_REG_CONST);
 						write_byte_to_buffer(buffer, tokens->TOKEN(1)->data);
 						write_int_to_buffer(buffer, tokens->TOKEN(2)->data);
@@ -44,7 +45,7 @@ CompilerStatus compile_tokens(CompilerState* cs, const char* filename) {
 				}
 
 				case (PUSH): {
-					if (tokens->TOKEN(1)->type == NUM) {
+					if (tokens->TOKEN(1)->type == NUMBER) {
 						write_byte_to_buffer(buffer, BYTECODE_PUSH_CONST);
 						write_int_to_buffer(buffer, tokens->TOKEN(1)->data);
 					}
@@ -55,12 +56,13 @@ CompilerStatus compile_tokens(CompilerState* cs, const char* filename) {
 				case (ADD): {
 					if (tokens->TOKEN(1)->type == INST) {
 						write_byte_to_buffer(buffer, BYTECODE_ADD_STACK);
+						i++;
 					} else if (tokens->TOKEN(1)->type == REGISTER && tokens->TOKEN(2)->type == REGISTER) {
 						write_byte_to_buffer(buffer, BYTECODE_ADD_REG_REG);
 						write_byte_to_buffer(buffer, tokens->TOKEN(1)->data);
 						write_byte_to_buffer(buffer, tokens->TOKEN(2)->data);
+						i += 3;
 					}
-					i++;
 					break;
 				}
 
@@ -75,8 +77,22 @@ CompilerStatus compile_tokens(CompilerState* cs, const char* filename) {
 				case (MUL): {
 					if (tokens->TOKEN(1)->type == INST) {
 						write_byte_to_buffer(buffer, BYTECODE_MUL_STACK);
+						i++;
+					} else if (tokens->TOKEN(1)->type == REGISTER && tokens->TOKEN(2)->type == REGISTER) {
+						write_byte_to_buffer(buffer, BYTECODE_MUL_REG_REG);
+						write_byte_to_buffer(buffer, tokens->TOKEN(1)->data);
+						write_byte_to_buffer(buffer, tokens->TOKEN(2)->data);
+						i += 3;
 					}
-					i++;
+					break;
+				}
+
+				case (INC): {
+					if (tokens->TOKEN(1)-> type == REGISTER) {
+						write_byte_to_buffer(buffer, BYTECODE_INC);
+						write_byte_to_buffer(buffer, tokens->TOKEN(1)->data);
+						i += 2;
+					}
 					break;
 				}
 
@@ -90,8 +106,106 @@ CompilerStatus compile_tokens(CompilerState* cs, const char* filename) {
 					break;
 				}
 
+				case (CMP): {
+					if (tokens->TOKEN(1)->type == REGISTER && tokens->TOKEN(2)->type == REGISTER) {
+						write_byte_to_buffer(buffer, BYTECODE_CMP_REG_REG);
+						write_byte_to_buffer(buffer, tokens->TOKEN(1)->data);
+						write_byte_to_buffer(buffer, tokens->TOKEN(2)->data);
+					} else if (tokens->TOKEN(1)->type == REGISTER && tokens->TOKEN(2)->type == NUMBER) {
+						write_byte_to_buffer(buffer, BYTECODE_CMP_REG_NUM);
+						write_byte_to_buffer(buffer, tokens->TOKEN(1)->data);
+						write_int_to_buffer(buffer, tokens->TOKEN(2)->data);
+					}
+					i += 3;
+					break;
+				}
+
+				case (JE): {
+					if (tokens->TOKEN(1)->type == JUMP_TO) {
+						write_byte_to_buffer(buffer, BYTECODE_JE);
+					}
+					i++;
+					break;
+				}
+
+				case (JNE): {
+					if (tokens->TOKEN(1)->type == JUMP_TO) {
+						write_byte_to_buffer(buffer, BYTECODE_JNE);
+					}
+					i++;
+					break;
+				}
+
+				case (JGT): {
+					if (tokens->TOKEN(1)->type == JUMP_TO) {
+						write_byte_to_buffer(buffer, BYTECODE_JGT);
+					}
+					i++;
+					break;
+				}
+
+				case (JGE): {
+					if (tokens->TOKEN(1)->type == JUMP_TO) {
+						write_byte_to_buffer(buffer, BYTECODE_JGE);
+					}
+					i++;
+					break;
+				}
+
+				case (JLT): {
+					if (tokens->TOKEN(1)->type == JUMP_TO) {
+						write_byte_to_buffer(buffer, BYTECODE_JLT);
+					}
+					i++;
+					break;
+				}
+
+				case (JLE): {
+					if (tokens->TOKEN(1)->type == JUMP_TO) {
+						write_byte_to_buffer(buffer, BYTECODE_JLE);
+					}
+					i++;
+					break;
+				}
+
+				case (JZ): {
+					if (tokens->TOKEN(1)->type == JUMP_TO) {
+						write_byte_to_buffer(buffer, BYTECODE_JZ);
+					}
+					i++;
+					break;
+				}
+
+				case (JNZ): {
+					if (tokens->TOKEN(1)->type == JUMP_TO) {
+						write_byte_to_buffer(buffer, BYTECODE_JNZ);
+					}
+					i++;
+					break;
+				}
+
+				case (CALL): {
+					if (tokens->TOKEN(1)->type == JUMP_TO) {
+						write_byte_to_buffer(buffer, BYTECODE_CALL);
+					}
+					i++;
+					break;
+				}
+
+				case (RET): {
+					write_byte_to_buffer(buffer, BYTECODE_RET);
+					i++;
+					break;
+				}
+
 				case (HLT): {
 					write_byte_to_buffer(buffer, BYTECODE_HLT);
+					i++;
+					break;
+				}
+
+				case (HELLO): {
+					write_byte_to_buffer(buffer, BYTECODE_HELLO);
 					i++;
 					break;
 				}
@@ -99,6 +213,10 @@ CompilerStatus compile_tokens(CompilerState* cs, const char* filename) {
 		} else if (token->type == LABEL) {
 			Label* label = cs->labels->labels[token->data];
 			label->addr = buffer->length;
+			i++;
+		} else if (token->type == JUMP_TO) {
+			cs->jumps->labels[token->data]->addr = buffer->length;
+			write_int_to_buffer(buffer, 0);
 			i++;
 		}
 	}

@@ -32,7 +32,7 @@ CompilerState* run_lexer(char* source) {
 
 		// Number
 		if (lex[0] == '#') {
-			add_token_to_list(list, create_token(NUM, convert_to_number(lex), line));
+			add_token_to_list(list, create_token(NUMBER, convert_to_number(lex), line));
 		}
 
 		// Register
@@ -109,10 +109,36 @@ int lexer_get_instruction(char* str) {
 		return SUB;
 	if (strcmp(str, "mul") == 0)
 		return MUL;
+	if (strcmp(str, "inc") == 0)
+		return INC;
 	if (strcmp(str, "jmp") == 0)
 		return JMP;
+	if (strcmp(str, "cmp") == 0)
+		return CMP;
+	if (strcmp(str, "je") == 0)
+		return JE;
+	if (strcmp(str, "jne") == 0)
+		return JNE;
+	if (strcmp(str, "jgt") == 0)
+		return JGT;
+	if (strcmp(str, "jge") == 0)
+		return JGE;
+	if (strcmp(str, "jlt") == 0)
+		return JLT;
+	if (strcmp(str, "jle") == 0)
+		return JLE;
+	if (strcmp(str, "jz") == 0)
+		return JZ;
+	if (strcmp(str, "jnz") == 0)
+		return JNZ;
+	if (strcmp(str, "call") == 0)
+		return CALL;
+	if (strcmp(str, "ret") == 0)
+		return RET;
 	if (strcmp(str, "hlt") == 0)
 		return HLT;
+	if (strcmp(str, "hello") == 0)
+		return HELLO;
 	return NO_INST;
 }
 

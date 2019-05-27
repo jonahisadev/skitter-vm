@@ -110,3 +110,10 @@ unsigned char* read_file_binary(const char* filename, int* len) {
 
 	return bytes;
 }
+
+long current_millis() {
+	struct timespec spec;
+	clock_gettime(CLOCK_MONOTONIC, &spec);
+
+	return round(spec.tv_nsec / 1.0e6);
+}

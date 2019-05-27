@@ -1,7 +1,10 @@
 main:
-	mov %bx #12
-	jmp @next
-	mov %bx #14
+	mov %bx #7
+	jmp @square
 
-next:
+finish:
 	hlt
+
+square:
+	mul %bx %bx
+	jmp @finish

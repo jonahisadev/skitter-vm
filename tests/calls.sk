@@ -1,0 +1,9 @@
+main:
+	mov %ax #5
+	call @square
+	mov %bx %ax
+	hlt
+
+square:
+	mul %ax %ax
+	ret

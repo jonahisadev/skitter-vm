@@ -27,4 +27,7 @@ char* read_file_ascii(const char* filename);
 void write_file_binary(const char* filename, ByteBuffer* buffer);
 unsigned char* read_file_binary(const char* filename, int* len);
 
+// Get current time
+long current_millis();
+
 #endif // SK_UTIL_H

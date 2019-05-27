@@ -22,6 +22,8 @@ int main(int argc, char** argv) {
 
 	// Compile
 	if (strcmp(argv[1], "compile") == 0) {
+		long prev = current_millis();
+
 		const char* filename = argv[2];
 		char* source = read_file_ascii(filename);
 		CompilerState* cs = run_lexer(source);
@@ -31,6 +33,10 @@ int main(int argc, char** argv) {
 		}
 		delete_compiler_state(cs);
 		free(source);
+
+		long now = current_millis() - prev;
+
+		printf("Compilation time: %04ldms\n", now);
 		return status;
 	}
 

@@ -1,0 +1,8 @@
+mov %ax #50
+cmp %ax #50
+jnz @end
+hlt
+
+end:
+	hello
+	hlt

@@ -5,7 +5,7 @@
 
 enum TokenType_t {
 	INST,
-	NUM,
+	NUMBER,
 	REGISTER,
 	LABEL,
 	JUMP_TO,
@@ -20,8 +20,22 @@ enum TokenInst_t {
 	ADD,
 	SUB,
 	MUL,
+	INC,
 	JMP,
-	HLT
+	CMP,
+	JE,
+	JNE,
+	JGT,
+	JGE,
+	JLT,
+	JLE,
+	JZ,
+	JNZ,
+	CALL,
+	RET,
+	HLT,
+
+	HELLO,
 };
 typedef enum TokenInst_t TokenInst;
 

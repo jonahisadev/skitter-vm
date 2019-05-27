@@ -1,0 +1,16 @@
+main:
+	mov %ax #5
+	mov %bx #0
+loop:
+	cmp %bx #10
+	je @end
+	call @inc
+	jmp @loop
+end:
+	mov %bx %ax
+	hlt
+
+inc:
+	inc %bx
+	inc %ax
+	ret

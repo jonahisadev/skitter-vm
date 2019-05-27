@@ -11,10 +11,10 @@ compile to this.
 
 ## TODO
 
-I'm working on documenting the virtual machine and laying out
-the roadmap to implementing everything. The bytecode file
-defines the opcodes to be implemented. There's no decompiler
-right now. There will be as the compiled code will become
-complicated enough that I won't want to translate it. The
-syntax file just gives an example of the goal of this virtual
-machine.
+* Decompiler with symbol support
+* Data and BSS
+* Strings
+* Heap allocator
+* Address manipulation
+* Native calls
+* Includes
